@@ -1,9 +1,8 @@
 pandoc: 3.1.11
-pkgdown: 2.0.9
+pkgdown: 2.1.1
 pkgdown_sha: ~
 articles: {}
-last_built: 2024-05-05T11:53Z
+last_built: 2025-02-06T08:09Z
 urls:
-  reference: https://rjdemetra.github.io/rjd3filters/reference
-  article: https://rjdemetra.github.io/rjd3filters/articles
-
+  reference: https://rjdverse.github.io/rjd3filters/reference
+  article: https://rjdverse.github.io/rjd3filters/articles
