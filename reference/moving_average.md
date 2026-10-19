@@ -14,6 +14,9 @@ moving_average(
 
 is.moving_average(x)
 
+# S3 method for class 'moving_average'
+coef(object, ...)
+
 is_symmetric(x)
 
 upper_bound(x)
@@ -46,27 +49,62 @@ show(object)
 
 - trailing_zero, leading_zero:
 
-  boolean indicating wheter to remove leading/trailing zero and NA.
+  boolean indicating whether to remove leading/trailing zero and NA.
+
+- object:
+
+  `moving_average` object.
+
+- ...:
+
+  other unused parameters.
 
 - s:
 
   seasonal period for the `to_seasonal()` function.
 
-- object:
+## Value
 
-  `moving_average` object.
+`moving_average()` returns a `"moving_average"` object which is an S4
+class with three slots:
+
+- `coefficients`: a numeric vector of coefficients.
+
+- `lower_bound`: an integer indicating the number of lags.
+
+- `upper_bound`: an integer indicating the number of leads
+  (automatically computed).
+
+`is.moving_average()` and `is_symmetric()` return a boolean.
+[`length()`](https://rdrr.io/r/base/length.html),
+[`numeric()`](https://rdrr.io/r/base/numeric.html), `lower_bound()` and
+`upper_bound()` return an integer. `mirror()`,
+[`rev()`](https://rdrr.io/r/base/rev.html) and `to_seasonal()` return a
+`"moving_average"` object.
 
 ## Details
 
 A moving average is defined by a set of coefficient \\\boldsymbol
 \theta=(\theta\_{-p},\dots,\theta\_{f})'\\ such all time series \\X_t\\
 are transformed as: \$\$
-M\_{\boldsymbol\theta}(X_t)=\sum\_{k=-p}^{+f}\theta_kX\_{t+k}=\left(\sum\_{k=-p}^{+f}\theta_kB^{-k}\right)X\_{t}
-\$\$ The integer \\p\\ is defined by the parameter `lags`.
+M\_{\boldsymbol\theta}(X_t)=\sum\_{k=-p}^{+f}\theta_kX\_{t+k}=\left(\sum\_{k=-p}^{+f}\theta_kB^{-k}\right)X\_{t}.
+\$\$ The integer \\p\\ is defined by the parameter `lags` and can be
+retrieved by the function `lower_bound()`. The integer \\f\\ is defined
+by the length of the coefficients and can be retrieved by the function
+`upper_bound()`. The length of the moving average is defined as
+\\f+p+1\\ and can be retrieved by the function
+[`length()`](https://rdrr.io/r/base/length.html). A moving average is
+symmetric (`is_symmetric()`) if \\p=f\\ and \\\theta\_{-k}=\theta\_{k}\\
+for all \\k=0,\dots,p\\.
 
 The function `to_seasonal()` transforms the moving average \\\boldsymbol
 \theta\\ to: \$\$
-M\_{\boldsymbol\theta'}(X_t)=\sum\_{k=-p}^{+f}\theta_kX\_{t+ks}=\left(\sum\_{k=-p}^{+f}\theta_kB^{-ks}\right)X\_{t}
+M\_{\boldsymbol\theta'}(X_t)=\sum\_{k=-p}^{+f}\theta_kX\_{t+k}=\left(\sum\_{k=-p}^{+f}\theta_kB^{-k}\right)X\_{t}.
+\$\$
+
+The functions `mirror()` and [`rev()`](https://rdrr.io/r/base/rev.html)
+transforms the moving average \\\boldsymbol \theta\\ to: \$\$
+M\_{\boldsymbol\theta'}(X_t)=\sum\_{k=-f}^{+p}\theta_kX\_{t+k}=\left(\sum\_{k=-f}^{+p}\theta_kB^{-k}\right)X\_{t}.
 \$\$
 
 ## Examples
@@ -75,48 +113,39 @@ M\_{\boldsymbol\theta'}(X_t)=\sum\_{k=-p}^{+f}\theta_kX\_{t+ks}=\left(\sum\_{k=-
 y <- retailsa$AllOtherGenMerchandiseStores
 e1 <- moving_average(rep(1,12), lags = -6)
 e1 <- e1/sum(e1)
-#> Error in .jfindClass(as.character(class), class.loader = class.loader): java.lang.UnsupportedClassVersionError: jdplus/toolkit/base/core/math/linearfilters/FiniteFilter has been compiled by a more recent version of the Java Runtime (class file version 65.0), this version of the Java Runtime only recognizes class file versions up to 61.0
 e2 <- moving_average(rep(1/12, 12), lags = -5)
 M2X12 <- (e1 + e2)/2
-#> Error in .jfindClass(as.character(class), class.loader = class.loader): java.lang.UnsupportedClassVersionError: jdplus/toolkit/base/core/math/linearfilters/FiniteFilter has been compiled by a more recent version of the Java Runtime (class file version 65.0), this version of the Java Runtime only recognizes class file versions up to 61.0
-coef(M2X12)
-#> Error: object 'M2X12' not found
+stats::coef(M2X12)
+#>        t-6        t-5        t-4        t-3        t-2        t-1          t 
+#> 0.04166667 0.08333333 0.08333333 0.08333333 0.08333333 0.08333333 0.08333333 
+#>        t+1        t+2        t+3        t+4        t+5        t+6 
+#> 0.08333333 0.08333333 0.08333333 0.08333333 0.08333333 0.04166667 
 M3 <- moving_average(rep(1/3, 3), lags = -1)
 M3X3 <- M3 * M3
-#> Error in .jfindClass(as.character(class), class.loader = class.loader): java.lang.UnsupportedClassVersionError: jdplus/toolkit/base/core/math/linearfilters/FiniteFilter has been compiled by a more recent version of the Java Runtime (class file version 65.0), this version of the Java Runtime only recognizes class file versions up to 61.0
 # M3X3 moving average applied to each month
 M3X3
-#> Error: object 'M3X3' not found
+#> [1] "0.1111 B^2 + 0.2222 B + 0.3333 + 0.2222 F + 0.1111 F^2"
 M3X3_seasonal <- to_seasonal(M3X3, 12)
-#> Error: object 'M3X3' not found
 # M3X3_seasonal moving average applied to the global series
 M3X3_seasonal
-#> Error: object 'M3X3_seasonal' not found
+#> [1] "0.1111 B^24 + 0.2222 B^12 + 0.3333 + 0.2222 F^12 + 0.1111 F^24"
 
 def.par <- par(no.readonly = TRUE)
 par(mai = c(0.5, 0.8, 0.3, 0))
 layout(matrix(c(1,2), nrow = 1))
 plot_gain(M3X3, main = "M3X3 applied to each month")
-#> Error: object 'M3X3' not found
 plot_gain(M3X3_seasonal, main = "M3X3 applied to the global series")
-#> Error: object 'M3X3_seasonal' not found
+
 par(def.par)
 
 # To apply the moving average
 t <- y * M2X12
-#> Error: object 'M2X12' not found
 # Or use the filter() function:
 t <- filter(y, M2X12)
-#> Error: object 'M2X12' not found
 si <- y - t
-#> Error in `-.default`(y, t): non-numeric argument to binary operator
 s <- si * M3X3_seasonal
-#> Error: object 'si' not found
 # or equivalently:
 s_mm <- M3X3_seasonal * (1 - M2X12)
-#> Error: object 'M3X3_seasonal' not found
 s <- y * s_mm
-#> Error: object 's_mm' not found
-plot(s)
-#> Error: object 's' not found
+graphics::plot(s)
 ```

@@ -54,7 +54,7 @@ localpolynomials(
 
 ## Value
 
-the target signal
+A `vector` or `ts` object with the filtered time series.
 
 ## References
 
@@ -70,9 +70,6 @@ local polynomial regression, with application to trend-cycle analysis”.
 ``` r
 x <- retailsa$AllOtherGenMerchandiseStores
 trend <- localpolynomials(x, horizon = 6)
-#> Error in .jcall("jdplus/filters/base/r/LocalPolynomialFilters", "[D",     "filter", as.numeric(x), as.integer(horizon), as.integer(degree),     kernel, endpoints, d, tweight, passband): RcallMethod: cannot determine object class
-plot(x)
-
-lines(trend, col = "red")
-#> Error: object 'trend' not found
+graphics::plot(x)
+graphics::lines(trend, col = "red")
 ```

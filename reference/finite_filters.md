@@ -1,6 +1,10 @@
 # Manipulating Finite Filters
 
-Manipulating Finite Filters
+Finite filters are a set of moving averages used to compute the filtered
+values of a time series. The symmetric filter is used on the central
+points (i.e. to obtain final estimates), while the right and left
+filters are used on the boundaries (at the end and beginning of the
+series) when the symmetric filter cannot be applied due to lack of data.
 
 ## Usage
 
@@ -14,8 +18,8 @@ finite_filters(
 
 is.finite_filters(x)
 
-# S4 method for class 'finite_filters'
-show(object)
+# S3 method for class 'finite_filters'
+to_seasonal(x, s)
 ```
 
 ## Arguments
@@ -44,22 +48,131 @@ show(object)
 
   object to test the class.
 
-- object:
+- s:
 
-  `finite_filters` object.
+  seasonal period for the
+  [`to_seasonal()`](https://rjdverse.github.io/rjd3filters/reference/moving_average.md)
+  function.
+
+## Value
+
+`finite_filters()` returns a `"finite_filters"` object, which is an S4
+class with three slots:
+
+- `sfilter`: the symmetric filter
+  ([`moving_average()`](https://rjdverse.github.io/rjd3filters/reference/moving_average.md)
+  object) used on the central points.
+
+- `rfilters`: a list of
+  [`moving_average()`](https://rjdverse.github.io/rjd3filters/reference/moving_average.md)
+  objects used on the boundaries at the end of the series (when the
+  symmetric filter cannot be applied due to missing future data).
+
+- `lfilters`: a list of
+  [`moving_average()`](https://rjdverse.github.io/rjd3filters/reference/moving_average.md)
+  objects used on the boundaries at the beginning of the series (when
+  the symmetric filter cannot be applied due to missing past data).
+
+`is.finite_filters()` returns `TRUE` if the object is a
+`"finite_filters"` object, `FALSE` otherwise.
+
+## See also
+
+[print,finite_filters-method](https://rjdverse.github.io/rjd3filters/reference/print.finite_filters.md).
 
 ## Examples
 
 ``` r
 ff_lp <- lp_filter()
-#> Error in .jcall("jdplus/filters/base/r/LocalPolynomialFilters", "Ljdplus/toolkit/base/core/math/linearfilters/ISymmetricFiltering;",     "filters", as.integer(horizon), as.integer(degree), kernel,     endpoints, d, tweight, passband): RcallMethod: cannot determine object class
 ff_simple_ma <- finite_filters(moving_average(c(1, 1, 1), lags = -1)/3,
                rfilters = list(moving_average(c(1, 1), lags = -1)/2))
-#> Error in .jfindClass(as.character(class), class.loader = class.loader): java.lang.UnsupportedClassVersionError: jdplus/toolkit/base/core/math/linearfilters/FiniteFilter has been compiled by a more recent version of the Java Runtime (class file version 65.0), this version of the Java Runtime only recognizes class file versions up to 61.0
 ff_lp
-#> Error: object 'ff_lp' not found
+#>             q=6          q=5          q=4          q=3          q=2
+#> t-6 -0.01934985 -0.016429821 -0.010992405 -0.008134877 -0.016032761
+#> t-5 -0.02786378 -0.025767846 -0.022036255 -0.020190215 -0.024868237
+#> t-4  0.00000000  0.001271838  0.003297605  0.004132155  0.002673996
+#> t-3  0.06549178  0.065939529  0.066259471  0.066082532  0.067844235
+#> t-2  0.14735651  0.146980166  0.145594283  0.144405855  0.149387420
+#> t-1  0.21433675  0.213136306  0.210044599  0.207844681  0.216046109
+#> t    0.24005716  0.238032623  0.233235092  0.230023684  0.241444975
+#> t+1  0.21433675  0.211488120  0.204984764  0.200761868  0.215403021
+#> t+2  0.14735651  0.143683794  0.135474614  0.130240227  0.148101243
+#> t+3  0.06549178  0.060994971  0.051079966  0.044834091  0.000000000
+#> t+4  0.00000000 -0.005320905 -0.016941735  0.000000000  0.000000000
+#> t+5 -0.02786378 -0.034008775  0.000000000  0.000000000  0.000000000
+#> t+6 -0.01934985  0.000000000  0.000000000  0.000000000  0.000000000
+#>              q=1         q=0
+#> t-6 -0.042706925 -0.09186038
+#> t-5 -0.038631881 -0.05811026
+#> t-4  0.001820871  0.01201758
+#> t-3  0.079901630  0.11977342
+#> t-2  0.174355336  0.24390220
+#> t-1  0.253924544  0.35314649
+#> t    0.292233930  0.42113096
+#> t+1  0.279102495  0.00000000
+#> t+2  0.000000000  0.00000000
+#> t+3  0.000000000  0.00000000
+#> t+4  0.000000000  0.00000000
+#> t+5  0.000000000  0.00000000
+#> t+6  0.000000000  0.00000000
 ff_simple_ma
-#> Error: object 'ff_simple_ma' not found
+#>           q=1 q=0
+#> t-1 0.3333333 0.5
+#> t   0.3333333 0.5
+#> t+1 0.3333333 0.0
 ff_lp * ff_simple_ma
-#> Error: object 'ff_lp' not found
+#>              q=7          q=6          q=5          q=4          q=3
+#> t-7 -0.006449948 -0.006449948 -0.005476607 -0.003664135 -0.002711626
+#> t-6 -0.015737874 -0.015737874 -0.014065889 -0.011009553 -0.009441697
+#> t-5 -0.015737874 -0.015737874 -0.013641943 -0.009910352 -0.008064312
+#> t-4  0.012542669  0.012542669  0.013814507  0.015840274  0.016674824
+#> t-3  0.070949432  0.070949432  0.071397178  0.071717120  0.071540180
+#> t-2  0.142395015  0.142395015  0.142018667  0.140632785  0.139444356
+#> t-1  0.200583472  0.200583472  0.199383032  0.196291325  0.194091407
+#> t    0.222910217  0.222910217  0.220885683  0.216088152  0.212876744
+#> t+1  0.200583472  0.200583472  0.197734846  0.191231490  0.187008593
+#> t+2  0.142395015  0.142395015  0.138722295  0.130513115  0.132751077
+#> t+3  0.070949432  0.070949432  0.066452620  0.053713993  0.065830455
+#> t+4  0.012542669  0.012542669  0.001553634  0.008555788  0.000000000
+#> t+5 -0.015737874 -0.018962848 -0.018778023  0.000000000  0.000000000
+#> t+6 -0.015737874 -0.018962848  0.000000000  0.000000000  0.000000000
+#> t+7 -0.006449948  0.000000000  0.000000000  0.000000000  0.000000000
+#>              q=2         q=1         q=0
+#> t-7 -0.005344254 -0.01423564 -0.03062013
+#> t-6 -0.013633666 -0.02711294 -0.04999021
+#> t-5 -0.012742334 -0.02650598 -0.04598435
+#> t-4  0.015216664  0.01436354  0.02456024
+#> t-3  0.073301884  0.08535928  0.12523106
+#> t-2  0.144425922  0.16939384  0.23894070
+#> t-1  0.202292835  0.24017127  0.40958171
+#> t    0.224298035  0.32160407  0.32828097
+#> t+1  0.226333286  0.23696256  0.00000000
+#> t+2  0.145851628  0.00000000  0.00000000
+#> t+3  0.000000000  0.00000000  0.00000000
+#> t+4  0.000000000  0.00000000  0.00000000
+#> t+5  0.000000000  0.00000000  0.00000000
+#> t+6  0.000000000  0.00000000  0.00000000
+#> t+7  0.000000000  0.00000000  0.00000000
+# To get the symmetric filter and the right filters:
+ff_lp@sfilter
+#> [1] " - 0.0193 B^6 - 0.0279 B^5 + 0.0655 B^3 + 0.1474 B^2 + 0.2143 B + 0.2401 + 0.2143 F + 0.1474 F^2 + 0.0655 F^3 - 0.0279 F^5 - 0.0193 F^6"
+ff_lp@rfilters
+#> [[1]]
+#> [1] " - 0.0164 B^6 - 0.0258 B^5 + 0.0013 B^4 + 0.0659 B^3 + 0.1470 B^2 + 0.2131 B + 0.2380 + 0.2115 F + 0.1437 F^2 + 0.0610 F^3 - 0.0053 F^4 - 0.0340 F^5"
+#> 
+#> [[2]]
+#> [1] " - 0.0110 B^6 - 0.0220 B^5 + 0.0033 B^4 + 0.0663 B^3 + 0.1456 B^2 + 0.2100 B + 0.2332 + 0.2050 F + 0.1355 F^2 + 0.0511 F^3 - 0.0169 F^4"
+#> 
+#> [[3]]
+#> [1] " - 0.0081 B^6 - 0.0202 B^5 + 0.0041 B^4 + 0.0661 B^3 + 0.1444 B^2 + 0.2078 B + 0.2300 + 0.2008 F + 0.1302 F^2 + 0.0448 F^3"
+#> 
+#> [[4]]
+#> [1] " - 0.0160 B^6 - 0.0249 B^5 + 0.0027 B^4 + 0.0678 B^3 + 0.1494 B^2 + 0.2160 B + 0.2414 + 0.2154 F + 0.1481 F^2"
+#> 
+#> [[5]]
+#> [1] " - 0.0427 B^6 - 0.0386 B^5 + 0.0018 B^4 + 0.0799 B^3 + 0.1744 B^2 + 0.2539 B + 0.2922 + 0.2791 F"
+#> 
+#> [[6]]
+#> [1] " - 0.0919 B^6 - 0.0581 B^5 + 0.0120 B^4 + 0.1198 B^3 + 0.2439 B^2 + 0.3531 B + 0.4211"
+#> 
 ```

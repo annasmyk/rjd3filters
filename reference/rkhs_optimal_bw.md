@@ -1,6 +1,6 @@
-# Optimal Bandwith of Reproducing Kernel Hilbert Space (RKHS) Filters
+# Optimal Bandwidth of Reproducing Kernel Hilbert Space (RKHS) Filters
 
-Function to export the optimal bandwidths used in Reproducing Kernel
+Function to compute the optimal bandwidths used in Reproducing Kernel
 Hilbert Space (RKHS) filters
 
 ## Usage
@@ -40,7 +40,7 @@ rkhs_optimal_bw(
 
 - density:
 
-  hypothesis on the spectral density: `"uniform"` (= white woise, the
+  hypothesis on the spectral density: `"uniform"` (= white noise, the
   default) or `"rw"` (= random walk).
 
 - passband:
@@ -49,13 +49,19 @@ rkhs_optimal_bw(
 
 - optimal.minBandwidth, optimal.maxBandwidth:
 
-  the range used for the optimal bandwith selection.
+  the range used for the optimal bandwidth selection.
+
+## Value
+
+A vector of optimal bandwidths for each lead time.
 
 ## Examples
 
 ``` r
 rkhs_optimal_bw(asymmetricCriterion = "Timeliness")
-#> Error in .jcall("jdplus/filters/base/r/RKHSFilters", "[D", "optimalBandwidth",     as.integer(horizon), as.integer(degree), kernel, asymmetricCriterion,     density == "rw", passband, optimal.minBandwidth, optimal.maxBandwidth): RcallMethod: cannot determine object class
+#>    q=0    q=1    q=2    q=3    q=4    q=5 
+#> 6.0000 6.0000 6.3875 8.1500 9.3500 6.0000 
 rkhs_optimal_bw(asymmetricCriterion = "Timeliness", optimal.minBandwidth = 6.2)
-#> Error in .jcheck(): java.lang.UnsupportedClassVersionError: jdplus/filters/base/r/RKHSFilters has been compiled by a more recent version of the Java Runtime (class file version 65.0), this version of the Java Runtime only recognizes class file versions up to 61.0
+#>       q=0       q=1       q=2       q=3       q=4       q=5 
+#>  6.200000  6.200000  6.384375  8.148229  9.352812 10.391458 
 ```

@@ -42,7 +42,7 @@ rkhs_filter(
 
 - density:
 
-  hypothesis on the spectral density: `"uniform"` (= white woise, the
+  hypothesis on the spectral density: `"uniform"` (= white noise, the
   default) or `"rw"` (= random walk).
 
 - passband:
@@ -51,14 +51,14 @@ rkhs_filter(
 
 - optimalbw:
 
-  boolean indicating if the bandwith should be choosen by optimisation
+  boolean indicating if the bandwidth should be choosen by optimisation
   (between `optimal.minBandwidth` and `optimal.minBandwidth` using the
   criteria `asymmetricCriterion`). If `optimalbw = FALSE` then the
-  bandwith specified in `bandwidth` will be used.
+  bandwidth specified in `bandwidth` will be used.
 
 - optimal.minBandwidth, optimal.maxBandwidth:
 
-  the range used for the optimal bandwith selection.
+  the range used for the optimal bandwidth selection.
 
 - bandwidth:
 
@@ -66,7 +66,7 @@ rkhs_filter(
 
 ## Value
 
-a
+A
 [`finite_filters()`](https://rjdverse.github.io/rjd3filters/reference/finite_filters.md)
 object.
 
@@ -81,7 +81,5 @@ Statistics 26, pp. 536–545. URL:
 
 ``` r
 rkhs <- rkhs_filter(horizon = 6, asymmetricCriterion = "Timeliness")
-#> Error in .jcheck(): java.lang.UnsupportedClassVersionError: jdplus/toolkit/base/core/data/analysis/DiscreteKernel has been compiled by a more recent version of the Java Runtime (class file version 65.0), this version of the Java Runtime only recognizes class file versions up to 61.0
 plot_coef(rkhs)
-#> Error: object 'rkhs' not found
 ```

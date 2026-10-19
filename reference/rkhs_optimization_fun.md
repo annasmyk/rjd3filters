@@ -1,7 +1,7 @@
 # Optimization Function of Reproducing Kernel Hilbert Space (RKHS) Filters
 
 Export function used to compute the optimal bandwidth of Reproducing
-Kernel Hilbert Space (RKHS) filters
+Kernel Hilbert Space (RKHS) filters.
 
 ## Usage
 
@@ -43,38 +43,96 @@ rkhs_optimization_fun(
 
 - density:
 
-  hypothesis on the spectral density: `"uniform"` (= white woise, the
+  hypothesis on the spectral density: `"uniform"` (= white noise, the
   default) or `"rw"` (= random walk).
 
 - passband:
 
   passband threshold.
 
+## Value
+
+A function that takes a bandwidth as input and returns the value of the
+optimization criterion.
+
 ## Examples
 
 ``` r
-plot(rkhs_optimization_fun(horizon = 6, leads = 0,degree = 3, asymmetricCriterion = "Timeliness"),
-     5.5, 6*3, ylab = "Timeliness",
-     main = "6X0 filter")
-#> Error in .jcall("jdplus/filters/base/r/RKHSFilters", "Ljava/util/function/DoubleUnaryOperator;",     "optimalCriteria", as.integer(horizon), as.integer(leads),     as.integer(degree), kernel, asymmetricCriterion, density ==         "rw", passband): RcallMethod: cannot determine object class
-plot(rkhs_optimization_fun(horizon = 6, leads = 1,degree = 3, asymmetricCriterion = "Timeliness"),
-     5.5, 6*3, ylab = "Timeliness",
-     main = "6X1 filter")
-#> Error in .jcheck(): java.lang.UnsupportedClassVersionError: jdplus/filters/base/r/RKHSFilters has been compiled by a more recent version of the Java Runtime (class file version 65.0), this version of the Java Runtime only recognizes class file versions up to 61.0
-plot(rkhs_optimization_fun(horizon = 6, leads = 2,degree = 3, asymmetricCriterion = "Timeliness"),
-     5.5, 6*3, ylab = "Timeliness",
-     main = "6X2 filter")
-#> Error in .jcall("jdplus/filters/base/r/RKHSFilters", "Ljava/util/function/DoubleUnaryOperator;",     "optimalCriteria", as.integer(horizon), as.integer(leads),     as.integer(degree), kernel, asymmetricCriterion, density ==         "rw", passband): RcallMethod: cannot determine object class
-plot(rkhs_optimization_fun(horizon = 6, leads = 3,degree = 3, asymmetricCriterion = "Timeliness"),
-     5.5, 6*3, ylab = "Timeliness",
-     main = "6X3 filter")
-#> Error in .jcheck(): java.lang.UnsupportedClassVersionError: jdplus/filters/base/r/RKHSFilters has been compiled by a more recent version of the Java Runtime (class file version 65.0), this version of the Java Runtime only recognizes class file versions up to 61.0
-plot(rkhs_optimization_fun(horizon = 6, leads = 4,degree = 3, asymmetricCriterion = "Timeliness"),
-     5.5, 6*3, ylab = "Timeliness",
-     main = "6X4 filter")
-#> Error in .jcall("jdplus/filters/base/r/RKHSFilters", "Ljava/util/function/DoubleUnaryOperator;",     "optimalCriteria", as.integer(horizon), as.integer(leads),     as.integer(degree), kernel, asymmetricCriterion, density ==         "rw", passband): RcallMethod: cannot determine object class
-plot(rkhs_optimization_fun(horizon = 6, leads = 5,degree = 3, asymmetricCriterion = "Timeliness"),
-     5.5, 6*3, ylab = "Timeliness",
-     main = "6X5 filter")
-#> Error in .jcheck(): java.lang.UnsupportedClassVersionError: jdplus/filters/base/r/RKHSFilters has been compiled by a more recent version of the Java Runtime (class file version 65.0), this version of the Java Runtime only recognizes class file versions up to 61.0
+graphics::plot(
+    rkhs_optimization_fun(
+        horizon = 6,
+        leads = 0,
+        degree = 3,
+        asymmetricCriterion = "Timeliness"
+    ),
+    5.5,
+    6 * 3,
+    ylab = "Timeliness",
+    main = "6X0 filter"
+)
+
+graphics::plot(
+    rkhs_optimization_fun(
+        horizon = 6,
+        leads = 1,
+        degree = 3,
+        asymmetricCriterion = "Timeliness"
+    ),
+    5.5,
+    6 * 3,
+    ylab = "Timeliness",
+    main = "6X1 filter"
+)
+
+graphics::plot(
+    rkhs_optimization_fun(
+        horizon = 6,
+        leads = 2,
+        degree = 3,
+        asymmetricCriterion = "Timeliness"
+    ),
+    5.5,
+    6 * 3,
+    ylab = "Timeliness",
+    main = "6X2 filter"
+)
+
+graphics::plot(
+    rkhs_optimization_fun(
+        horizon = 6,
+        leads = 3,
+        degree = 3,
+        asymmetricCriterion = "Timeliness"
+    ),
+    5.5,
+    6 * 3,
+    ylab = "Timeliness",
+    main = "6X3 filter"
+)
+
+graphics::plot(
+    rkhs_optimization_fun(
+        horizon = 6,
+        leads = 4,
+        degree = 3,
+        asymmetricCriterion = "Timeliness"
+    ),
+    5.5,
+    6 * 3,
+    ylab = "Timeliness",
+    main = "6X4 filter"
+)
+
+graphics::plot(
+    rkhs_optimization_fun(
+        horizon = 6,
+        leads = 5,
+        degree = 3,
+        asymmetricCriterion = "Timeliness"
+    ),
+    5.5,
+    6 * 3,
+    ylab = "Timeliness",
+    main = "6X5 filter"
+)
 ```
